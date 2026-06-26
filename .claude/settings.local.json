@@ -136,7 +136,9 @@
       "Bash(git fetch *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(tee data/_sweep_result.txt)",
+      "Bash(git checkout *)"
     ]
   }
 }
