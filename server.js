@@ -2200,6 +2200,29 @@ app.get('/api/preopening', async (req, res) => {
     const clean = (movers || [])
       .filter(m => m.symbol && (m.iep || m.price) >= 100 && ((m.value || 0) >= 1e9 || (m.ieval || 0) >= 1e9))
       .sort((a, b) => ((b.ieval || b.value || 0) - (a.ieval || a.value || 0)));
+
+    // ── DIAGNOSTIK SEMENTARA (untuk membongkar masalah pra-pembukaan kosong) ──
+    // Tujuan: tahu APA yang dikirim Stockbit saat jam 08:45–08:59.
+    // Hapus blok ini setelah masalah selesai.
+    try {
+      const raw = movers || [];
+      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+      const diag = {
+        waktuWIB:       wib.toTimeString().slice(0, 8),
+        totalDariStockbit: raw.length,
+        adaIEP:         raw.filter(m => (m.iep || 0) > 0).length,
+        adaIEVAL:       raw.filter(m => (m.ieval || 0) > 0).length,
+        adaValueTransaksi: raw.filter(m => (m.value || 0) > 0).length,
+        lolosFilter:    clean.length,
+        contoh3:        raw.slice(0, 3).map(m => ({ symbol: m.symbol, price: m.price, value: m.value, iep: m.iep, ieval: m.ieval })),
+      };
+      console.log('🔬 [PRA-PEMBUKAAN DIAG]', JSON.stringify(diag));
+      // Simpan juga ke file (data/ persist di server, tidak hilang saat restart)
+      const line = JSON.stringify({ ts: new Date().toISOString(), ...diag }) + '\n';
+      fs.appendFileSync(path.join(__dirname, 'data', 'preopen_diag.log'), line);
+    } catch (logErr) { console.error('diag preopen gagal:', logErr.message); }
+    // ── akhir diagnostik ──
+
     res.json({ ok: true, at: new Date().toISOString(), movers: clean });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
