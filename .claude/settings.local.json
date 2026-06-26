@@ -128,7 +128,15 @@
       "Bash(echo \"=== Folders di Downloads \\(scalp/idx/app\\) ===\"; ls -d /c/Users/harto/Downloads/*/ 2>/dev/null | grep -iE 'scalp|idx|app|trad'; echo; echo \"=== Projects dir Claude \\(nama lama tersimpan di sini\\) ===\"; ls /c/Users/harto/.claude/projects/ 2>/dev/null | grep -iE 'scalp|idx|app|trad|harto')",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
-      "Bash(printenv)"
+      "Bash(printenv)",
+      "Bash(mkdir -p /tmp/appzip)",
+      "Bash(unzip -o -q app.zip -d /tmp/appzip)",
+      "Bash(sed -n '1560,1582p' /tmp/appzip/public/index.html)",
+      "Bash(git check-ignore *)",
+      "Bash(git fetch *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
