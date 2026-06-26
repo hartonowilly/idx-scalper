@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — IDX Scalper Pro</title>
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#11161f; --bg3:#1a212e; --border:#232c3b;
+    --text:#e6edf3; --muted:#7d8896; --green:#3fb950; --blue:#58a6ff; --red:#f85149;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .card{
+    background:var(--bg2); border:1px solid var(--border); border-radius:12px;
+    padding:32px 28px; width:100%; max-width:380px;
+    box-shadow:0 12px 40px rgba(0,0,0,.4);
+  }
+  .logo{ font-size:20px; font-weight:700; letter-spacing:.5px; margin-bottom:4px; }
+  .logo span{ color:var(--green); }
+  .sub{ font-size:12px; color:var(--muted); margin-bottom:22px; }
+  label{ display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+  input{
+    width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:12px 14px; color:var(--text); font-size:14px; outline:none;
+  }
+  input:focus{ border-color:var(--blue); }
+  button{
+    width:100%; margin-top:16px; padding:12px; border:none; border-radius:8px;
+    background:var(--blue); color:#000; font-size:14px; font-weight:700; cursor:pointer;
+  }
+  button:hover{ opacity:.9; }
+  button:disabled{ opacity:.5; cursor:default; }
+  .msg{ font-size:12px; margin-top:14px; min-height:16px; color:var(--red); text-align:center; }
+</style>
+</head>
+<body>
+  <form class="card" id="loginForm">
+    <div class="logo">IDX <span>Scalper</span> Pro</div>
+    <div class="sub">Masukkan password untuk mengakses dashboard.</div>
+    <label for="pwd">Password</label>
+    <input type="password" id="pwd" autocomplete="current-password" autofocus placeholder="••••••••">
+    <button type="submit" id="btn">Masuk</button>
+    <div class="msg" id="msg"></div>
+  </form>
+<script>
+  const form = document.getElementById('loginForm');
+  const btn  = document.getElementById('btn');
+  const msg  = document.getElementById('msg');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = document.getElementById('pwd').value;
+    btn.disabled = true; btn.textContent = 'Memeriksa...'; msg.textContent = '';
+    try {
+      const r = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const j = await r.json();
+      if (j.ok) { window.location.href = '/'; return; }
+      msg.textContent = j.error || 'Password salah';
+    } catch (err) {
+      msg.textContent = 'Gagal terhubung ke server';
+    }
+    btn.disabled = false; btn.textContent = 'Masuk';
+  });
+</script>
+</body>
+</html>
