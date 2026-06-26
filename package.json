@@ -1,5 +1,5 @@
 {
-  "name": "indonesia-stock-scaler",
+  "name": "idx-scalper",
   "version": "1.0.0",
   "description": "Indonesian Stock Market Scalping Bot - Real-time Analysis & Trading Recommendations",
   "main": "server.js",
