@@ -258,7 +258,10 @@ function checkPaperExits(symbol, price, high, low, exitSig) {
   if (pos.morningMode && pos.openingHigh > 0 && price < pos.openingHigh * 0.998) {
     return closePaperPosition(symbol, price, 'ORB_FAIL');
   }
-  if (exitSig && exitSig.exit)                      return closePaperPosition(symbol, price, 'EXIT');
+  // Sinyal EXIT berbasis EMA9/VWAP/RSI itu level-MENIT → cocok untuk scalp pagi,
+  // TAPI menutup posisi BELI-TAHAN dalam 1–2 menit (noise harian). Untuk beli-tahan,
+  // biarkan hanya TP/SL/TIME yang menutup. EXIT cepat hanya untuk mode momentum pagi.
+  if (exitSig && exitSig.exit && pos.morningMode) return closePaperPosition(symbol, price, 'EXIT');
   const holdLimit = pos.holdMs || PAPER_HOLD_MS;
   if (Date.now() - (pos.openedMs || 0) > holdLimit) return closePaperPosition(symbol, price, 'TIME');
 }
